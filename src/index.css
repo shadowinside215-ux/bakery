@@ -12,6 +12,10 @@
 
 @layer base {
   body {
-    @apply bg-bakery-cream text-bakery-brown font-sans;
+    @apply bg-bakery-cream text-bakery-brown font-sans transition-colors duration-300;
+  }
+  
+  [dir="rtl"] {
+    @apply font-sans; /* Arabic font could be added here */
   }
 }

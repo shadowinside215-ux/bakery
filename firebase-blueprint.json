@@ -1,0 +1,34 @@
+{
+  "entities": {
+    "gallery": {
+      "title": "Gallery Image",
+      "description": "A photo in the bakery gallery",
+      "type": "object",
+      "properties": {
+        "url": { "type": "string", "description": "Cloudinary image URL" },
+        "publicId": { "type": "string", "description": "Cloudinary public ID" },
+        "caption": { "type": "string", "description": "Optional caption for the image" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Upload timestamp" }
+      },
+      "required": ["url", "createdAt"]
+    },
+    "settings": {
+      "title": "App Settings",
+      "description": "Global application settings",
+      "type": "object",
+      "properties": {
+        "adminEmail": { "type": "string" }
+      }
+    }
+  },
+  "firestore": {
+    "gallery": {
+      "schema": "gallery",
+      "description": "Collection of gallery images"
+    },
+    "settings": {
+      "schema": "settings",
+      "description": "Global settings"
+    }
+  }
+}
