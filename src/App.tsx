@@ -343,7 +343,7 @@ export default function App() {
           <div className="hidden md:flex items-center gap-8 text-sm uppercase tracking-widest font-medium">
             <a href="#about" className="hover:text-bakery-gold transition-colors">{t('nav.about')}</a>
             <a href="#why-us" className="hover:text-bakery-gold transition-colors">{t('nav.whyUs')}</a>
-            <a href="#gallery" className="hover:text-bakery-gold transition-colors">{t('nav.gallery')}</a>
+            <a href="#menu" className="hover:text-bakery-gold transition-colors">{t('nav.gallery')}</a>
             <a href="#reviews" className="hover:text-bakery-gold transition-colors">{t('nav.reviews')}</a>
             <a href="#visit" className="hover:text-bakery-gold transition-colors">{t('nav.visit')}</a>
             
@@ -353,6 +353,8 @@ export default function App() {
               <button onClick={() => changeLanguage('ar')} className={`hover:text-bakery-gold ${i18n.language === 'ar' ? 'text-bakery-gold' : ''}`}>AR</button>
             </div>
 
+            {/* Admin button hidden as requested */}
+            {/* 
             <button 
               onClick={() => user ? handleLogout() : setIsAdminOpen(true)}
               className="flex items-center gap-2 bg-bakery-brown text-bakery-cream px-4 py-2 rounded-full text-xs hover:bg-bakery-brown/90 transition-all"
@@ -360,6 +362,7 @@ export default function App() {
               {user ? <LogOut size={14} /> : <LogIn size={14} />}
               {user ? t('nav.admin') : t('nav.admin')}
             </button>
+            */}
           </div>
 
           <button 
@@ -381,7 +384,7 @@ export default function App() {
             >
               <a href="#about" onClick={() => setIsMenuOpen(false)}>{t('nav.about')}</a>
               <a href="#why-us" onClick={() => setIsMenuOpen(false)}>{t('nav.whyUs')}</a>
-              <a href="#gallery" onClick={() => setIsMenuOpen(false)}>{t('nav.gallery')}</a>
+              <a href="#menu" onClick={() => setIsMenuOpen(false)}>{t('nav.gallery')}</a>
               <a href="#reviews" onClick={() => setIsMenuOpen(false)}>{t('nav.reviews')}</a>
               <a href="#visit" onClick={() => setIsMenuOpen(false)}>{t('nav.visit')}</a>
               
@@ -391,6 +394,8 @@ export default function App() {
                 <button onClick={() => changeLanguage('ar')}>AR</button>
               </div>
 
+              {/* Admin button hidden as requested */}
+              {/* 
               <button 
                 onClick={() => { user ? handleLogout() : setIsAdminOpen(true); setIsMenuOpen(false); }}
                 className="flex items-center justify-center gap-2 bg-bakery-brown text-bakery-cream py-4 rounded-xl"
@@ -398,6 +403,7 @@ export default function App() {
                 {user ? <LogOut size={16} /> : <LogIn size={16} />}
                 {user ? "Sign Out" : "Admin Login"}
               </button>
+              */}
             </motion.div>
           )}
         </AnimatePresence>
@@ -522,8 +528,8 @@ export default function App() {
         </div>
       </section>
 
-      {/* Gallery Section */}
-      <section id="gallery" className="py-32 px-6 bg-bakery-cream">
+      {/* Menu Section */}
+      <section id="menu" className="py-32 px-6 bg-bakery-cream">
         <div className="max-w-7xl mx-auto">
           <motion.div {...fadeIn} className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-serif mb-4">{t('nav.gallery')}</h2>
@@ -584,7 +590,7 @@ export default function App() {
                 >
                   <img 
                     src={img.url} 
-                    alt={img.name || "Gallery"} 
+                    alt={img.name || "Menu Item"} 
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     referrerPolicy="no-referrer"
                   />
@@ -804,7 +810,7 @@ export default function App() {
                   <Award className="text-bakery-gold" />
                 </div>
                 <h3 className="text-2xl font-serif">Admin Access</h3>
-                <p className="text-sm text-bakery-brown/60 mt-2">Sign in to manage your gallery</p>
+                <p className="text-sm text-bakery-brown/60 mt-2">Sign in to manage your menu</p>
               </div>
 
               <form onSubmit={handleAdminLogin} className="space-y-6">

@@ -9,7 +9,7 @@ const resources = {
         "about": "About",
         "whyUs": "Why Us",
         "reviews": "Reviews",
-        "gallery": "Gallery",
+        "gallery": "Our Menu",
         "visit": "Visit Us",
         "admin": "Admin"
       },
@@ -58,7 +58,7 @@ const resources = {
         "about": "À Propos",
         "whyUs": "Pourquoi Nous",
         "reviews": "Avis",
-        "gallery": "Galerie",
+        "gallery": "Notre Menu",
         "visit": "Visitez-nous",
         "admin": "Admin"
       },
@@ -107,7 +107,7 @@ const resources = {
         "about": "حول",
         "whyUs": "لماذا نحن",
         "reviews": "المراجعات",
-        "gallery": "المعرض",
+        "gallery": "قائمة الطعام",
         "visit": "زرنا",
         "admin": "المسؤول"
       },
