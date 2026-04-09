@@ -6,6 +6,8 @@
       "type": "object",
       "properties": {
         "url": { "type": "string", "description": "Cloudinary image URL" },
+        "name": { "type": "string", "description": "Product name" },
+        "price": { "type": "string", "description": "Product price" },
         "publicId": { "type": "string", "description": "Cloudinary public ID" },
         "caption": { "type": "string", "description": "Optional caption for the image" },
         "createdAt": { "type": "string", "format": "date-time", "description": "Upload timestamp" }
@@ -17,7 +19,8 @@
       "description": "Global application settings",
       "type": "object",
       "properties": {
-        "adminEmail": { "type": "string" }
+        "adminEmail": { "type": "string" },
+        "logoUrl": { "type": "string" }
       }
     }
   },

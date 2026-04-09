@@ -97,6 +97,8 @@ const staggerContainer = {
 interface GalleryImage {
   id: string;
   url: string;
+  name?: string;
+  price?: string;
   createdAt: any;
 }
 
@@ -107,8 +109,14 @@ export default function App() {
   const [user, setUser] = useState<any>(null);
   const [gallery, setGallery] = useState<GalleryImage[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [isLogoUploading, setIsLogoUploading] = useState(false);
   const [imageToDelete, setImageToDelete] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  
+  // New Product State
+  const [newProductName, setNewProductName] = useState("");
+  const [newProductPrice, setNewProductPrice] = useState("");
   
   // Admin Login State
   const [loginName, setLoginName] = useState("");
@@ -118,6 +126,15 @@ export default function App() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
       setUser(u);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(doc(db, "settings", "global"), (doc) => {
+      if (doc.exists()) {
+        setLogoUrl(doc.data().logoUrl);
+      }
     });
     return () => unsubscribe();
   }, []);
@@ -223,8 +240,12 @@ export default function App() {
         try {
           await addDoc(collection(db, "gallery"), {
             url: data.secure_url,
+            name: newProductName,
+            price: newProductPrice,
             createdAt: serverTimestamp()
           });
+          setNewProductName("");
+          setNewProductPrice("");
         } catch (dbErr) {
           handleFirestoreError(dbErr, OperationType.WRITE, "gallery");
           setErrorMessage("Failed to save image to database. Check permissions.");
@@ -250,13 +271,72 @@ export default function App() {
     }
   };
 
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+    const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+
+    if (!cloudName || !uploadPreset) {
+      setErrorMessage("Cloudinary is not configured.");
+      return;
+    }
+
+    setIsLogoUploading(true);
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", uploadPreset);
+
+    try {
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+        method: "POST",
+        body: formData
+      });
+      const data = await res.json();
+      
+      if (data.secure_url) {
+        try {
+          const { setDoc } = await import("firebase/firestore");
+          await setDoc(doc(db, "settings", "global"), {
+            logoUrl: data.secure_url
+          }, { merge: true });
+        } catch (dbErr) {
+          handleFirestoreError(dbErr, OperationType.WRITE, "settings/global");
+          setErrorMessage("Failed to save logo to database.");
+        }
+      }
+    } catch (err) {
+      console.error("Logo upload failed:", err);
+    } finally {
+      setIsLogoUploading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen selection:bg-bakery-gold selection:text-white">
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-bakery-cream/80 backdrop-blur-md border-b border-bakery-brown/10">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="text-2xl font-serif font-bold tracking-tight text-bakery-brown">
-            MounRed
+          <div className="flex items-center gap-4">
+            <div className="relative group">
+              <div className="w-12 h-12 rounded-full border-2 border-bakery-gold overflow-hidden bg-bakery-brown/5 flex items-center justify-center">
+                {logoUrl ? (
+                  <img src={logoUrl} alt="Logo" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="text-bakery-gold font-bold">M</div>
+                )}
+              </div>
+              {user && (
+                <label className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 rounded-full cursor-pointer transition-opacity">
+                  <Plus size={16} className="text-white" />
+                  <input type="file" className="hidden" onChange={handleLogoUpload} accept="image/*" />
+                </label>
+              )}
+            </div>
+            <div className="text-2xl font-serif font-bold tracking-tight text-bakery-brown">
+              MounRed
+            </div>
           </div>
           
           {/* Desktop Nav */}
@@ -451,25 +531,43 @@ export default function App() {
           </motion.div>
 
           {user && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-12 p-8 bg-bakery-brown/5 rounded-3xl border-2 border-dashed border-bakery-gold/30 text-center">
-              <input 
-                type="file" 
-                id="gallery-upload" 
-                className="hidden" 
-                onChange={handleFileUpload}
-                accept="image/*"
-              />
-              <label 
-                htmlFor="gallery-upload" 
-                className="cursor-pointer flex flex-col items-center gap-4 group"
-              >
-                <div className="w-16 h-16 bg-bakery-gold/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                  {isUploading ? <Loader2 className="animate-spin text-bakery-gold" /> : <Plus className="text-bakery-gold" />}
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-12 p-8 bg-bakery-brown/5 rounded-3xl border-2 border-dashed border-bakery-gold/30">
+              <div className="max-w-md mx-auto space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <input 
+                    type="text" 
+                    placeholder={t('gallery.name')}
+                    value={newProductName}
+                    onChange={(e) => setNewProductName(e.target.value)}
+                    className="bg-white border border-bakery-brown/10 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-bakery-gold/50"
+                  />
+                  <input 
+                    type="text" 
+                    placeholder={t('gallery.price')}
+                    value={newProductPrice}
+                    onChange={(e) => setNewProductPrice(e.target.value)}
+                    className="bg-white border border-bakery-brown/10 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-bakery-gold/50"
+                  />
                 </div>
-                <div className="font-bold uppercase tracking-widest text-sm text-bakery-brown">
-                  {isUploading ? "Uploading..." : "Add New Photo"}
-                </div>
-              </label>
+                <input 
+                  type="file" 
+                  id="gallery-upload" 
+                  className="hidden" 
+                  onChange={handleFileUpload}
+                  accept="image/*"
+                />
+                <label 
+                  htmlFor="gallery-upload" 
+                  className="cursor-pointer flex flex-col items-center gap-4 group"
+                >
+                  <div className="w-16 h-16 bg-bakery-gold/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                    {isUploading ? <Loader2 className="animate-spin text-bakery-gold" /> : <Plus className="text-bakery-gold" />}
+                  </div>
+                  <div className="font-bold uppercase tracking-widest text-sm text-bakery-brown">
+                    {isUploading ? t('gallery.uploading') : t('gallery.upload')}
+                  </div>
+                </label>
+              </div>
             </motion.div>
           )}
 
@@ -486,10 +584,24 @@ export default function App() {
                 >
                   <img 
                     src={img.url} 
-                    alt="Gallery" 
+                    alt={img.name || "Gallery"} 
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     referrerPolicy="no-referrer"
                   />
+                  
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-4 text-center">
+                    {img.name && <h4 className="text-white font-serif text-lg mb-1">{img.name}</h4>}
+                    {img.price && <p className="text-bakery-gold font-bold mb-4">{img.price}</p>}
+                    <a 
+                      href={`https://wa.me/212766555535?text=${encodeURIComponent(`Hello, I would like to order ${img.name || 'this product'} (${img.price || ''})`)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-bakery-gold text-white px-6 py-2 rounded-full text-xs uppercase tracking-widest font-bold hover:bg-bakery-gold/90 transition-all"
+                    >
+                      {t('gallery.order')}
+                    </a>
+                  </div>
+
                   {user && (
                     <button 
                       onClick={() => setImageToDelete(img.id)}

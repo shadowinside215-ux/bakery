@@ -41,6 +41,14 @@ const resources = {
         "hours": "Hours",
         "hoursText": "Open Daily: 7:00 AM - 10:00 PM",
         "directions": "Get Directions"
+      },
+      "gallery": {
+        "order": "Order Now",
+        "price": "Price",
+        "name": "Name",
+        "upload": "Add New Product",
+        "uploading": "Uploading...",
+        "deleteConfirm": "Delete this product?"
       }
     }
   },
@@ -82,6 +90,14 @@ const resources = {
         "hours": "Horaires",
         "hoursText": "Ouvert tous les jours : 7h00 - 22h00",
         "directions": "Obtenir l'itinéraire"
+      },
+      "gallery": {
+        "order": "Commander",
+        "price": "Prix",
+        "name": "Nom",
+        "upload": "Ajouter un Produit",
+        "uploading": "Téléchargement...",
+        "deleteConfirm": "Supprimer ce produit ?"
       }
     }
   },
@@ -123,6 +139,14 @@ const resources = {
         "hours": "ساعات العمل",
         "hoursText": "مفتوح يوميًا: 7:00 صباحًا - 10:00 مساءً",
         "directions": "احصل على الاتجاهات"
+      },
+      "gallery": {
+        "order": "اطلب الآن",
+        "price": "السعر",
+        "name": "الاسم",
+        "upload": "إضافة منتج جديد",
+        "uploading": "جاري التحميل...",
+        "deleteConfirm": "هل تريد حذف هذا المنتج؟"
       }
     }
   }

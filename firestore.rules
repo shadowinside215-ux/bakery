@@ -20,7 +20,7 @@ service cloud.firestore {
                       request.resource.data.url is string &&
                       request.resource.data.url.size() < 1000;
       allow delete: if isAdmin();
-      allow update: if false; // Images are immutable in this app
+      allow update: if isAdmin(); // Allow updating name/price
     }
 
     match /settings/{settingId} {
