@@ -577,7 +577,7 @@ export default function App() {
             </motion.div>
           )}
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-12">
             {gallery.length > 0 ? (
               gallery.map((img, idx) => (
                 <motion.div 
@@ -586,36 +586,38 @@ export default function App() {
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: idx * 0.1 }}
-                  className="group relative aspect-square rounded-2xl overflow-hidden bg-bakery-brown/5"
+                  className="group flex flex-col"
                 >
-                  <img 
-                    src={img.url} 
-                    alt={img.name || "Menu Item"} 
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    referrerPolicy="no-referrer"
-                  />
-                  
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-4 text-center">
-                    {img.name && <h4 className="text-white font-serif text-lg mb-1">{img.name}</h4>}
+                  <div className="relative aspect-square rounded-2xl overflow-hidden bg-bakery-brown/5 mb-4">
+                    <img 
+                      src={img.url} 
+                      alt={img.name || "Menu Item"} 
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      referrerPolicy="no-referrer"
+                    />
+                    
+                    {user && (
+                      <button 
+                        onClick={() => setImageToDelete(img.id)}
+                        className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="text-center flex flex-col items-center">
+                    {img.name && <h4 className="text-bakery-brown font-serif text-xl mb-1">{img.name}</h4>}
                     {img.price && <p className="text-bakery-gold font-bold mb-4">{img.price}</p>}
                     <a 
                       href={`https://wa.me/212766555535?text=${encodeURIComponent(`Hello, I would like to order ${img.name || 'this product'} (${img.price || ''})`)}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="bg-bakery-gold text-white px-6 py-2 rounded-full text-xs uppercase tracking-widest font-bold hover:bg-bakery-gold/90 transition-all"
+                      className="bg-bakery-gold text-white px-8 py-2.5 rounded-full text-xs uppercase tracking-widest font-bold hover:bg-bakery-gold/90 transition-all transform hover:scale-105"
                     >
                       {t('gallery.order')}
                     </a>
                   </div>
-
-                  {user && (
-                    <button 
-                      onClick={() => setImageToDelete(img.id)}
-                      className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  )}
                 </motion.div>
               ))
             ) : (
